@@ -1,0 +1,18 @@
+
+
+[id="search-the-string-and-save-the-output_{context}"]
+= Search the string and save the output
+
+.Procedure
+* Search the string *sarah* in `/etc/passwd` and redirect the output to `/root/lines`.
++
+----
+# grep sarah /etc/passws > /root/lines
+----
+
+.Verification steps
+* Verify the existence of the string in `/root/lines`.
++
+----
+# cat /root/lines
+----

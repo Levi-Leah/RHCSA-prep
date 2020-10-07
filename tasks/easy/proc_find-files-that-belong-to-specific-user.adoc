@@ -1,0 +1,32 @@
+
+
+[id="find-files-that-belong-to-specific-user_{context}"]
+= Find and copy files that belong to a specific user
+
+Find the files that belong to the user *julice* and copy them int `/root/findresults`.
+
+.Procedure
+. Check if the user *julice* exists.
++
+----
+# id julice
+----
+
+. Create the `/root/findresults` directory.
++
+----
+# mkdir -p /root/findresults
+----
+
+. Find the files that belong to the user *julice* and copy them into `/root/findresults`.
++
+----
+# find / -user julice -exec cp {} /root/findresults/ \;
+----
+
+.Verification steps
+* Verify that files with the right ownership were copied.
++
+----
+# ls -ltr /root/findresults
+----

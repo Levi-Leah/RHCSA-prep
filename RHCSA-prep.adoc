@@ -1,0 +1,54 @@
+:experimental:
+
+:toc:
+
+= RHCSA exap prep
+
+:leveloffset: +1
+
+{toc}
+
+// HARD
+include::tasks/hard/proc_create-a-new-physical-partition.adoc[]
+
+include::tasks/hard/proc_create-a-new-swap-partition.adoc[]
+
+include::tasks/hard/proc_create-a-logical-volume.adoc[]
+
+include::tasks/hard/proc_resize-the-logical-volume.adoc[]
+
+
+// MEDIUM
+include::tasks/medium/proc_configure-wifi.adoc[]
+
+include::tasks/easy/proc_set-the-hostname.adoc[]
+
+include::tasks/easy/proc_configure-yum-repo.adoc[]
+
+include::tasks/medium/proc_configure-your-system-to-use-ntp.adoc[]
+
+include::tasks/medium/proc_copy-files-set-permissions.adoc[]
+
+include::tasks/medium/proc_configure-a-cron-job.adoc[]
+
+// EASY
+include::tasks/easy/proc_reset-root-passwd-on-boot.adoc[]
+
+include::tasks/easy/proc_create-colab-dir.adoc[]
+
+include::tasks/easy/proc_add-user-with-a-specific-id.adoc[]
+
+include::tasks/easy/proc_find-files-that-belong-to-specific-user.adoc[]
+
+include::tasks/easy/proc_create-an-archive-file.adoc[]
+
+include::tasks/easy/proc_search-the-string-and-save-the-output.adoc[]
+
+// NONEXISTENT
+include::tasks/nonexistent/proc_set-selinux-to-enforcing.adoc[]
+
+include::tasks/nonexistent/proc_enable-ip-forwarding.adoc[]
+
+include::tasks/nonexistent/proc_intsall-kernel-updates.adoc[]
+
+:leveloffset: -1

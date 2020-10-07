@@ -1,0 +1,18 @@
+
+
+[id="add-user-with-a-specific-id_{context}"]
+= Add the user with a specific ID
+
+.Procedure
+* Add the user `talusan` with userid 2985.
++
+----
+# useradd -u 2985 talusan
+----
+
+.Verification steps
+* Verify the id of the new user.
++
+----
+# id talusan
+----

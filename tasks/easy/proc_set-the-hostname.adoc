@@ -1,0 +1,19 @@
+
+
+[id="set-the-hostname_{context}"]
+= Set the hostname
+
+.Procedure
+. Set the hostname to `server1.example.com`.
++
+----
+# hostnamectl set-hostname server1.example.com
+----
+
+.Verification steps
+* Ensure the hostname is set correctly.
++
+----
+# hostname
+server1.example.com
+----

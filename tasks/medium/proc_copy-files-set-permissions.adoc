@@ -1,0 +1,46 @@
+
+
+[id="copy-files-set-permissions_{context}"]
+= Copy files and set permissions
+
+Copy the file `/etc/fstab` to `/var/tmp`. Configure the permissions so that he file `/var/tmp/fstab` is owned by `root`, belongs to group `root`, and is not executable by anyone. The user *andrew* is able to read and write `/var/tmp/fstab`. The user *susan* can neither read nor write `/var/tmp/fstab`. All other users can read `/var/tmp/fstab`.
+
+.Procedure
+. Copy the file `/etc/fstab` to `/var/tmp`.
++
+----
+# cp /etc/fstab /var/tmp/
+----
+
+. Enable the user *andrew* to read and write `/var/tmp/fstab`, but can not execute.
++
+----
+# setfacl -m u:andrew:rw- /var/tmp/fstab
+----
+
+. Ensure that the user *susan* can not read, write, nor execute the `/var/tmp/fstab` file.
++
+----
+# setfacl -m u:susan:--- /var/tmp/fstab
+----
+
+.Verification steps
+* Ensure that the permissions are set correctly.
++
+----
+# getfacl /var/tmp/fstab
+----
++
+The output returns:
++
+----
+# file: /var/tmp/fstab
+# owner: root
+# group: root
+user::rw-
+user:andrew:rw-
+user:susan:---
+group::r--
+mask::rw-
+other::r--
+----

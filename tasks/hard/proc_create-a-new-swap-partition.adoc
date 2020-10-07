@@ -1,0 +1,213 @@
+:experimental:
+
+[id="create-a-new-swap-partition_{context}"]
+= Create a new SWAP partition
+
+Create a new 150MB swap partition.
+
+.Prerequisites
+* Preexisting extended partition.
+
+.Procedure
+. Display amount of free and used memory in the system in mebibytes.
++
+----
+# free -m
+----
+. Select the device.
++
+----
+# fdisk /dev/vdb
+----
++
+The output returns:
++
+----
+Welcome to fdisk (util-linux 2.32.1).
+Changes will remain in memory only, until you decide to write them.
+Be careful before using the write command.
+
+
+Command (m for help):
+----
+. Press btn:[n] to add a new partition.
++
+The output returns:
++
+----
+Partition type
+   p   primary (0 primary, 1 extended, 3 free)
+   l   logical (numbered from 5)
+----
+. Press btn:[l] to select the logical partition type.
++
+The output returns:
++
+----
+Adding logical partition 6
+First sector (210944-20971519, default 210944):
+----
+. Press btn:[Enter] to select the default option.
++
+The output returns:
++
+----
+Last sector, +sectors or +size{K,M,G,T,P} (4096-20971519, default 20971519):
+----
+. Enter *+150M* and press btn:[Enter].
++
+[subs=+quotes]
+----
+Last sector, +sectors or +size{K,M,G,T,P} (4096-20971519, default 20971519): *+150M*
+----
++
+The output returns:
++
+----
+Created a new partition 5 of type 'Linux' and of size 150 MiB.
+----
+. Press btn:[l] to list known partition types.
++
+The output returns:
++
+[subs=+quotes]
+----
+0  Empty           24  NEC DOS         81  Minix / old Lin bf  Solaris
+1  FAT12           27  Hidden NTFS Win *82  Linux swap* / So c1  DRDOS/sec (FAT-
+2  XENIX root      39  Plan 9          83  Linux           c4  DRDOS/sec (FAT-
+3  XENIX usr       3c  PartitionMagic  84  OS/2 hidden or  c6  DRDOS/sec (FAT-
+4  FAT16 <32M      40  Venix 80286     85  Linux extended  c7  Syrinx
+5  Extended        41  PPC PReP Boot   86  NTFS volume set da  Non-FS data
+6  FAT16           42  SFS             87  NTFS volume set db  CP/M / CTOS / .
+7  HPFS/NTFS/exFAT 4d  QNX4.x          88  Linux plaintext de  Dell Utility
+8  AIX             4e  QNX4.x 2nd part 8e  Linux LVM       df  BootIt
+9  AIX bootable    4f  QNX4.x 3rd part 93  Amoeba          e1  DOS access
+a  OS/2 Boot Manag 50  OnTrack DM      94  Amoeba BBT      e3  DOS R/O
+b  W95 FAT32       51  OnTrack DM6 Aux 9f  BSD/OS          e4  SpeedStor
+c  W95 FAT32 (LBA) 52  CP/M            a0  IBM Thinkpad hi ea  Rufus alignment
+e  W95 FAT16 (LBA) 53  OnTrack DM6 Aux a5  FreeBSD         eb  BeOS fs
+f  W95 Ext'd (LBA) 54  OnTrackDM6      a6  OpenBSD         ee  GPT
+10  OPUS            55  EZ-Drive        a7  NeXTSTEP        ef  EFI (FAT-12/16/
+11  Hidden FAT12    56  Golden Bow      a8  Darwin UFS      f0  Linux/PA-RISC b
+12  Compaq diagnost 5c  Priam Edisk     a9  NetBSD          f1  SpeedStor
+14  Hidden FAT16 <3 61  SpeedStor       ab  Darwin boot     f4  SpeedStor
+16  Hidden FAT16    63  GNU HURD or Sys af  HFS / HFS+      f2  DOS secondary
+17  Hidden HPFS/NTF 64  Novell Netware  b7  BSDI fs         fb  VMware VMFS
+18  AST SmartSleep  65  Novell Netware  b8  BSDI swap       fc  VMware VMKCORE
+1b  Hidden W95 FAT3 70  DiskSecure Mult bb  Boot Wizard hid fd  Linux raid auto
+1c  Hidden W95 FAT3 75  PC/IX           bc  Acronis FAT32 L fe  LANstep
+1e  Hidden W95 FAT1 80  Old Minix       be  Solaris boot    ff  BBT
+----
+. Press btn:[t] to change a partition type.
++
+The output returns:
++
+----
+Partition number (1,5,6, default 6):
+----
+. Press btn:[Enter] to select the default option.
++
+The output returns:
++
+----
+Hex code (type L to list all codes):
+----
+. Append *82* and press btn:[Enter].
++
+[subs=+quotes]
+----
+Hex code (type L to list all codes): *82*
+----
++
+The output returns:
++
+----
+Changed type of partition 'Linux' to 'Linux swap / Solaris'.
+----
+. Press btn:[p] to print the partition table.
++
+The output returns:
++
+[subs=+quotes]
+----
+Disk /dev/vdb: 10.7 GiB, 11489038336 bytes, 22439528 sectors
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disklabel type: dos
+Disk identifier: 0x86ed2d1d
+
+Device     Boot  Start      End  Sectors  Size Id Type
+/dev/vdb1         2048 20971519 20969472   10G  5 Extended
+/dev/vdb5         4096   208895   204800  100M 83 Linux
+*/dev/vdb6       210944   518143   307200  150M 82 Linux swap / Solaris*
+----
+. Press btn:[w] to write table to disk and exit.
++
+The output returns:
++
+----
+The partition table has been altered.
+Calling ioctl() to re-read partition table.
+Syncing disks.
+----
+. Inform the OS of partition table changes.
++
+----
+# partprobe
+----
+. Set up a Linux swap area on `/dev/vdb6`.
++
+----
+# mkswap /dev/vdb6
+----
++
+The output returns:
++
+----
+Setting up swapspace version 1, size = 150 MiB (157282304 bytes)
+no label, UUID=127fb7e7-5da0-448e-b117-33330995b018
+----
+. Copy the *UUID*.
+. Enable the `/dev/vdb6` device.
++
+----
+# swapon /dev/vdb6
+----
+. Make all devices marked as swap available in `/etc/fstab`.
++
+----
+# swapon -a
+----
+. Open `/etc/fstab`.
++
+----
+# vim /etc/fstab
+----
+. Edit the `fstab`.
++
+[subs=+quotes]
+----
+#
+# /etc/fstab
+# Created by anaconda on Mon Sep 28 01:46:30 2020
+#
+# Accessible filesystems, by reference, are maintained under '/dev/disk/'.
+# See man pages fstab(5), findfs(8), mount(8) and/or blkid(8) for more info.
+#
+# After editing this file, run 'systemctl daemon-reload' to update systemd
+# units generated from this file.
+#
+/dev/mapper/rhel-root   /                       xfs     defaults        0 0
+UUID=e292df87-d3d5-4199-bf01-5dbea1a59c05 /boot                   xfs     defaults        0 0
+/dev/mapper/rhel-swap   swap                    swap    defaults        0 0
+UUID=ee46106e-189d-408b-911a-5d5a2543cc38 /mountpoint ext4 defaults 0 0
+*UUID=127fb7e7-5da0-448e-b117-33330995b018 swap swap defaults 0 0*
+----
+
+.Verification steps
+* Verify the existence of your partition.
++
+----
+# free -m
+----

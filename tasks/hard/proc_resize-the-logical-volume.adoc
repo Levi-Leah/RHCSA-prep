@@ -1,0 +1,56 @@
+:experimental:
+
+[id="resize-the-logical-volume_{context}"]
+= Resize the logical volume
+
+.Procedure
+
+. Print file system disk space usage by print-type and in human-readable format.
++
+----
+# df -Th
+----
++
+The output returns:
++
+----
+Filesystem                         Type      Size  Used Avail Use% Mounted on
+devtmpfs                           devtmpfs  648M     0  648M   0% /dev
+tmpfs                              tmpfs     663M     0  663M   0% /dev/shm
+tmpfs                              tmpfs     663M  9.6M  653M   2% /run
+tmpfs                              tmpfs     663M     0  663M   0% /sys/fs/cgroup
+/dev/mapper/rhel-root              xfs        17G  4.1G   13G  24% /
+/dev/vda1                          xfs      1014M  169M  846M  17% /boot
+tmpfs                              tmpfs     133M   20K  133M   1% /run/user/42
+tmpfs                              tmpfs     133M   48K  133M   1% /run/user/1000
+/dev/vdb5                          ext4       93M  1.6M   85M   2% /mountpoint
+*/dev/mapper/datacontainer-datacopy vfat      799M  4.0K  799M   1% /datasource*
+----
+. Unmount the logical volume.
++
+----
+# umount /datasource/
+----
+. Check the file system. Force check even if the file system seems clean.
++
+----
+# e2fsck -f /dev/datacontainer/datacopy
+----
+. Reduce the size of the logical volume by *400M*.
++
+[subs=+quotes]
+----
+# lvreduce -L *400M* /dev/datacontainer/datacopy
+----
+. Mount all filesystems.
++
+----
+# mount -a
+----
+
+.Verification steps
+* Verify that the logical volume is resized.
++
+----
+# lvdisplay
+----

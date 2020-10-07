@@ -1,0 +1,35 @@
+
+
+[id="configure-yum-repo_{context}"]
+= Configure yum repositories
+
+.Procedure
+. Open a new file called `redhat.repo`.
++
+----
+# vim /etc/yum.repos.d/redhat.repo
+----
+. Add the following repositories:
++
+----
+[appstream]
+name = AppStream
+baseurl = *some-url*
+enabled = 1
+gpgcheck = 0
+
+[baseos]
+name = BaseOS
+baseurl = *some-url*
+enabled = 1
+gpgcheck = 0
+----
+
+. Save the file and exit.
+
+.Verification steps
+* List available repositories.
++
+----
+# yum repolist
+----

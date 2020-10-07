@@ -1,0 +1,201 @@
+:experimental:
+
+[id="create-a-logical-volume_{context}"]
+= Create a logical volume
+
+.Prerequisites
+* Preexisting extended partition.
+
+.Procedure
+. Select the device.
++
+----
+# fdisk /dev/vdb
+----
+. Press btn:[n] to add a new partition.
+. Press btn:[l] to select the logical partition type.
+. Press btn:[Enter] to select the default option.
+. Enter *+802M* and press btn:[Enter].
++
+[subs=+quotes]
+----
+Last sector, +sectors or +size{K,M,G,T,P} (4096-20971519, default 20971519): *802M*
+----
++
+The output returns:
++
+----
+Created a new partition 5 of type 'Linux' and of size 802 MiB.
+----
+. Press btn:[l] to list known partition types.
+. Press btn:[t] to change a partition type.
+. Press btn:[Enter] to select the default option.
+. Append *8e* and press btn:[Enter].
++
+[subs=+quotes]
+----
+Hex code (type L to list all codes): *8e*
+----
++
+The output returns:
++
+----
+Changed type of partition 'Linux' to 'Linux LVM'.
+----
+. Press btn:[p] to print the partition table.
++
+[subs=+quotes]
+----
+Device     Boot  Start      End  Sectors  Size Id Type
+/dev/vdb1         2048 20971519 20969472   10G  5 Extended
+/dev/vdb5         4096   208895   204800  100M 83 Linux
+/dev/vdb6       210944   503807   292864  143M 82 Linux swap / Solaris
+*/dev/vdb7       505856  2148351  1642496  802M 8e Linux LVM*
+----
+. Press btn:[w] to write table to disk and exit.
+. Inform the OS of partition table changes.
++
+----
+# partprobe
+----
+. Initialize physical volume `/dev/vdb7` for use by LVM.
++
+----
+# pvcreate  /dev/vdb7
+----
++
+The output returns:
++
+----
+Physical volume "/dev/vdb7" successfully created.
+----
+. Create a volume group with specific physical extent size of *16MB* named *datacontainer*.
++
+----
+# vgcreate -s 16MB datacontainer /dev/vdb7
+----
++
+The output returns:
++
+----
+Volume group "datacontainer" successfully created
+----
+. Create a logical volume with the size of *50* extents named datacopy.
++
+----
+# lvcreate -l 50 -n datacopy datacontainer
+----
++
+The output returns:
++
+----
+Logical volume "datacopy" created.
+----
+
+. Display the configurations.
++
+----
+# lvdisplay
+----
++
+The output returns:
++
+----
+  --- Logical volume ---
+  LV Path                /dev/datacontainer/datacopy
+  LV Name                datacopy
+  VG Name                datacontainer
+  LV UUID                LhMY53-R6EA-elGS-d7Ku-G0Ib-QADY-uGPDdU
+  LV Write Access        read/write
+  LV Creation host, time localhost.localdomain, 2020-09-28 12:02:35 +0200
+  LV Status              available
+  # open                 0
+  LV Size                800.00 MiB
+  Current LE             50
+  Segments               1
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     8192
+  Block device           253:2
+----
+
+. Create an MS-DOS filesystem under Linux on `/dev/datacontainer/datacopy`.
++
+----
+# mkfs.vfat /dev/datacontainer/datacopy
+----
+. Create a directory named `/datasource` for mounting your logical volume.
++
+----
+# mkdir /datasource
+----
+. Print block device attributes.
++
+----
+# blkid
+----
++
+The output returns:
++
+[subs=+quotes]
+----
+/dev/mapper/rhel-root: UUID="3fbcadda-7d25-4ecc-bca5-1131d394e9ec" TYPE="xfs"
+/dev/vda2: UUID="DLyrB7-6jXx-0GUk-Fg7k-Xp8L-4Vla-jnwwVz" TYPE="LVM2_member" PARTUUID="caeb7fdf-02"
+/dev/vda1: UUID="57cd91c0-92bb-4a2a-af1a-a0a615452d6f" TYPE="xfs" PARTUUID="caeb7fdf-01"
+/dev/vdb5: UUID="f9ac05a8-5246-4d76-bc0a-f3dab185ec29" TYPE="ext4" PARTUUID="a2f58941-05"
+/dev/mapper/rhel-swap: UUID="90fcd3ae-8688-4a00-910d-96e42be7575a" TYPE="swap"
+/dev/vdb6: UUID="d5ddac7c-abaf-439f-af50-4dfa6ee9d037" TYPE="swap" PARTUUID="a2f58941-06"
+/dev/vdb7: UUID="s2FoEf-A9K5-fsmT-mkw1-34wt-ys8O-1ZvuYT" TYPE="LVM2_member" PARTUUID="a2f58941-07"
+*/dev/mapper/datacontainer-datacopy: UUID="614A-2FCF" TYPE="vfat"*
+----
+. Copy the *UUID*.
+. Open `/etc/fstab`.
++
+----
+# vim /etc/fstab
+----
+. Edit the `fstab`.
++
+[subs=+quotes]
+----
+#
+# /etc/fstab
+# Created by anaconda on Mon Sep 28 11:17:38 2020
+#
+# Accessible filesystems, by reference, are maintained under '/dev/disk/'.
+# See man pages fstab(5), findfs(8), mount(8) and/or blkid(8) for more info.
+#
+# After editing this file, run 'systemctl daemon-reload' to update systemd
+# units generated from this file.
+#
+/dev/mapper/rhel-root   /                       xfs     defaults        0 0
+UUID=57cd91c0-92bb-4a2a-af1a-a0a615452d6f /boot                   xfs     defaults        0 0
+/dev/mapper/rhel-swap   swap                    swap    defaults        0 0
+UUID=f9ac05a8-5246-4d76-bc0a-f3dab185ec29 /mountpoint ext4 defaults 0 0
+UUID=d5ddac7c-abaf-439f-af50-4dfa6ee9d037 swap swap defaults 0 0
+*UUID=614A-2FCF /datasource vfat defaults 0 0*
+----
+. Save and exit.
+. Mount all filesystems.
++
+----
+# mount -a
+----
+
+.Verification steps
+* Verify the existence of your logical volume.
++
+----
+# fdisk -l
+----
++
+The output returns:
++
+[subs=+quotes]
+----
+Device     Boot  Start      End  Sectors  Size Id Type
+/dev/vdb1         2048 20971519 20969472   10G  5 Extended
+/dev/vdb5         4096   208895   204800  100M 83 Linux
+/dev/vdb6       210944   503807   292864  143M 82 Linux swap / Solaris
+*/dev/vdb7       505856  2148351  1642496  802M 8e Linux LVM*
+----

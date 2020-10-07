@@ -1,0 +1,29 @@
+
+
+[id="intsall-kernel-updates_{context}"]
+= Intsall kernel updates
+
+Install the appropriate kernel and make it default when system reboots. The original kernel must remain available on the system.
+
+.Procedure
+.Procedure
+. Open a new file called `redhat.repo`.
++
+----
+# vim /etc/yum.repos.d/redhat.repo
+----
+. Add the following repository:
++
+----
+[kernel]
+name = kernel
+baseurl = *some-url*
+enabled = 1
+gpgcheck = 0
+----
+. Save the file and exit.
+. Install the kernel.
++
+----
+# yum install kernel
+----

@@ -1,0 +1,37 @@
+
+
+[id="create-users-groups-memberships_{context}"]
+= Create users, groups, and group memberships
+
+.Procedure
+. Create a group named *sysgrp*.
++
+----
+# groupadd sysgrp
+----
+. Create a user *andrew* who belongs to *sysgrp* as a secondary group.
++
+----
+# useradd andrew
+# usermod -aG sysgrp andrew
+----
+. Create a user *susan* who belongs to *sysgrp* as a secondary group.
++
+----
+# useradd susan
+# usermod -aG sysgrp susan
+----
+. Create a user *sarah* who does not have access to an interactive shell and is *not* a member of *sysgrp*.
++
+----
+# useradd -s /sbin/nologin sarah
+----
+
+.Verification steps
+* Verify you set everything correctly
++
+----
+# id andrew
+# id susan
+# su - sarah
+----

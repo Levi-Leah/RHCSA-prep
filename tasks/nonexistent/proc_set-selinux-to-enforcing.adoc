@@ -1,0 +1,37 @@
+
+
+[id="set-selinux-to-enforcing_{context}"]
+= Set SELinux to enforcing mode
+
+.Procedure
+. Check the mode.
++
+----
+$ getenforce
+----
++
+If output returns `Enforcing`, do nothing.
+
+. Set SELinux to enforcing mode.
++
+----
+# setenforce 1
+----
+
+////
+. Edit the `/etc/selinux/config` file.
++
+----
+vi /etc/selinux/config
+----
+////
+
+. Reboot.
+
+.Verification steps
+* Ensure SELinux is running in the enforcing mode.
++
+----
+$ getenforce
+Enforcing
+----

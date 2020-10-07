@@ -1,0 +1,44 @@
+
+
+[id="configure-wifi_{context}"]
+= Configure Wi-Fi connection
+
+Add a connection with the following parameters:
+
+* IP=172.25.X.11/255.255.255.0
+* Gateway=172.25.254.254
+* DNS=172.25.254.254
+
+.Procedure
+. Add the connection.
++
+[subs=+quotes]
+----
+# nmcli connection add con-name *name* ifname *eth0* type ethernet ipv4 *172.25.9.11/24* qw4 *172.25.254.254*
+----
+
+. Modify the connection.
++
+[subs=+quotes]
+----
+# nmcli connection modify *name* ipv4.dns *172.25.254.254*
+----
+
+. Activate the connection.
++
+[subs=+quotes]
+----
+# nmcli connection up *name*
+----
+
+. Restart the NetworkManager.
++
+----
+# systemctl restart NetworkManager
+----
+
+. Enable the NetworkManager.
++
+----
+# systemctl enable NetworkManager
+----

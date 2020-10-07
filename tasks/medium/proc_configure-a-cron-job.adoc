@@ -1,0 +1,46 @@
+
+
+[id="configure-a-cron-job_{context}"]
+= Configure a cron job
+
+The user *andrew* must configure a cron job that runs daily at *14:22* local time and executes `/bin/echo hiya`.
+
+.Procedure
+. Install cronie.
++
+----
+# sudo yum install cronie
+----
+. Enable crond.
++
+----
+# systemctl enable crond
+----
+. Start crond.
++
+----
+# systemctl start crond
+----
+. Edit the crontab for the user *andrew*.
++
+[subs=+quotes]
+----
+# crontab -eu andrew
+
+min     hour    days    mon     year
+*23      14      *       *       *       /bin/echo hiya*
+----
+. Save and exit.
+
+.Verification steps
+. Verify the current crontab for user *andrew* is set correctly.
++
+----
+# crontab -lu andrew
+----
++
+The output returns:
++
+----
+23	14	*	*	*	/bin/echo hiya
+----

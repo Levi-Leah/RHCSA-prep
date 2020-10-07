@@ -1,0 +1,36 @@
+
+
+[id="create-colab-dir_{context}"]
+= Create collaborative directory
+
+.Procedure
+. Create a directory.
++
+----
+# mkdir -p /redhat/sysgrp
+----
+
+. Change group ownership.
++
+----
+# chgrp sysgrp /redhat/sysgrp/
+----
+
+. Change file mode bits.
++
+----
+# chmod 2770 /redhat/sysgrp/
+----
+
+.Verification steps
+* Verify the correctness of set ownership and permissions.
++
+----
+# ls -ltr /redhat
+total 0
+drwxrws---. 2 root sysgrp 27 Sep 20:21 sysgrp
+# cd /redhat/sysgrp/
+# touch xyz.txt
+#  ls -ltr xyz.txt
+-rw-r--r--. 1 root sysgrp 0 27 Sep 20:23 xyz.txt
+----
